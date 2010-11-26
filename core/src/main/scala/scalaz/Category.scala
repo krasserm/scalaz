@@ -26,6 +26,11 @@ object Category {
     def compose[X, Y, Z](f: Y => Z, g: X => Y) = f compose g   
   }
 
+  implicit val StreamFunction1Category: Category[StreamFunction1] = new Category[StreamFunction1] {
+    def id[A] = a => a
+    def compose[X, Y, Z](f: StreamFunction1[Y,Z], g: StreamFunction1[X,Y]) = f compose g
+  }
+  
   /** The flipped Function1 type */
   case class <=[A,B](value: B => A) extends NewType[B => A]
 

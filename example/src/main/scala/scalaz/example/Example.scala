@@ -5,6 +5,7 @@ object Example {
   def run {
     ExampleApplicative.run
     ExampleArrow.run
+    ExampleArrowExperimental.run
     ExampleBifunctor.run
     ExampleBoolean.run
     ExampleBKTree.run

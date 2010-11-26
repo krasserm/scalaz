@@ -80,6 +80,8 @@ object Scalaz extends ScalazLow
 
   val ArraySeq = collection.mutable.ArraySeq
 
+  type StreamFunction1[-T,+R] = Function1[Stream[T],Stream[R]]
+
   def ×[A, B] = (a: A) => (b: B) => (a, b)
 
   def pure[F[_]:Pure] = new (Id ~> F) {

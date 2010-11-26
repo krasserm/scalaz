@@ -19,9 +19,17 @@ sealed trait MAB[M[_, _], A, B] extends PimpedType[M[A, B]] {
 
   def second[C](implicit a: Arrow[M]): M[(C, A), (C, B)] = a second value
 
-  def ***[C, D](k: M[C, D])(implicit a: Arrow[M]): M[(A, C), (B, D)] = a.category.compose(a.second[C, D, B](k), first[C])
+  def left[C](implicit a: ArrowChoice[M]): M[Either[A, C], Either[B, C]] = a left value
 
-  def &&&[C](k: M[A, C])(implicit a: Arrow[M]): M[A, (B, C)] = a.category.compose(***(k), a.arrow(a => (a, a)))
+  def right[C](implicit a: ArrowChoice[M]): M[Either[C, A], Either[C, B]] = a right value
+
+  def ***[C, D](k: => M[C, D])(implicit a: Arrow[M]): M[(A, C), (B, D)] = a.category.compose(a.second[C, D, B](k), first[C])
+
+  def &&&[C](k: => M[A, C])(implicit a: Arrow[M]): M[A, (B, C)] = a.category.compose(***(k), a.arrow(a => (a, a)))
+
+  def +++[C, D](k: => M[C, D])(implicit a: ArrowChoice[M]): M[Either[A, C], Either[B, D]] = a.category.compose(a.right[C, D, B](k), left[C])
+
+  def |||[C](k: => M[C, B])(implicit a: ArrowChoice[M]): M[Either[A, C], B] = a.category.compose(a.arrow(a.join[B]), +++(k))
 
   def product(implicit a: Arrow[M]): M[(A, A), (B, B)] = this *** value
 
